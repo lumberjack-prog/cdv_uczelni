@@ -1,3 +1,10 @@
+To configure REDIS in Spring Boot application add `application-prod.properties` file under `src/main/resources/` with the following content:
+```
+spring.redis.host=<your host>
+spring.redis.port=6379
+spring.redis.password=<your password>
+```
+
 `Get All` universities
 ```
 http://localhost:8080/api/v1/getAll
