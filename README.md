@@ -1,3 +1,60 @@
+## Cassandra
+
+To configure Cassandra in  Spring Boot application add `application-prod.properties` file under `src/main/resources/` with the following content:
+```
+sping.data.cassandra.keyspace-name=uczelnie
+sping.data.cassandra.contact-points=<your host>
+sping.data.cassandra.port=9042
+spring.cassandra.schema-action=create_if_not_exists
+basic.load-balancing-policy.local-datacenter=<your data center>
+```
+Create keyspace `uczelnie` manually:
+```
+CREATE KEYSPACE IF NOT EXISTS uczelnie WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : '1' };
+```
+
+```
+        {
+            "name": "CDV",
+            "type": "uczelnia",
+            "miasto": "Poznan",
+            "score": 28,
+            "wydzialy": [
+                {
+                    "name": "WYDZIAŁ AUTOMATYKI, ROBOTYKI I ELEKTROTECHNIKI",
+                    "kierunki": [
+                        {
+                            "name": "Automatyka i robotyka",
+                            "type": "techniczne"
+                        },
+                        {
+                            "name": "Matematyka w technice",
+                            "type": "techniczne"
+                        }
+                    ]
+                },
+                {
+                    "name": "LOGO WYDZIAŁU WYDZIAŁ INFORMATYKI I TELEKOMUNIKACJI",
+                    "kierunki": [
+                        {
+                            "name": "Bioinformatyka",
+                            "type": "techniczne"
+                        },
+                        {
+                            "name": "Informatyka",
+                            "type": "techniczne"
+                        },
+                        {
+                            "name": "Sztuczna inteligencja",
+                            "type": "techniczne"
+                        }
+                    ]
+                }
+            ]
+        }
+```
+## Redis
+
 To configure REDIS in Spring Boot application add `application-prod.properties` file under `src/main/resources/` with the following content:
 ```
 spring.redis.host=<your host>
