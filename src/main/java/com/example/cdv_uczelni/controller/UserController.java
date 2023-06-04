@@ -3,6 +3,7 @@ package com.example.cdv_uczelni.controller;
 import com.example.cdv_uczelni.model.User;
 import com.example.cdv_uczelni.model.UserDto;
 import com.example.cdv_uczelni.service.IUserService;
+import com.example.cdv_uczelni.service.impl.FavoriteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/cs/user")
@@ -20,6 +22,8 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private FavoriteService favoriteService;
 
 
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
@@ -36,28 +40,28 @@ public class UserController {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ResponseEntity<?> save(@RequestBody User user){
-        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.OK);
+        return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseEntity<?> update(@RequestBody User user){
-        return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
+        return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/deleteUserById/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> delete(@PathVariable String id){
-        return new ResponseEntity<>(userService.deleteUser(id), HttpStatus.OK);
+    public ResponseEntity<?> delete(@PathVariable UUID id){
+        return new ResponseEntity<>(userService.delete(id), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/addToFavorites/{universityKey}", method = RequestMethod.GET)
-    public ResponseEntity<?> addToFavorites(@PathVariable String universityKey){
+    public ResponseEntity<?> addToFavorites(@PathVariable UUID universityKey){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return new ResponseEntity<>(userService.addUniversityToUserFavorites(authentication.getName(), universityKey), HttpStatus.OK);
+        return new ResponseEntity<>(favoriteService.save(authentication.getName(), universityKey), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/removeFromFavorites/{universityKey}", method = RequestMethod.GET)
-    public ResponseEntity<?> removeFromFavorites(@PathVariable String universityKey){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return new ResponseEntity<>(userService.addUniversityToUserFavorites(authentication.getName(), universityKey), HttpStatus.OK);
-    }
+//    @RequestMapping(value = "/removeFromFavorites/{universityKey}", method = RequestMethod.GET)
+//    public ResponseEntity<?> removeFromFavorites(@PathVariable UUID universityKey){
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        return new ResponseEntity<>(userService.addUniversityToUserFavorites(authentication.getName(), universityKey), HttpStatus.OK);
+//    }
 }

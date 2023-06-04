@@ -16,7 +16,7 @@ CREATE KEYSPACE IF NOT EXISTS uczelnie WITH REPLICATION = { 'class' : 'SimpleStr
 ```
         {
             "name": "CDV",
-            "type": "uczelnia",
+            "type": "university",
             "miasto": "Poznan",
             "score": 28,
             "wydzialy": [
@@ -79,24 +79,24 @@ Json example:
     "uczelnie": [
         {
             "name": "UAM",
-            "type": "uczelnia",
+            "type": "university",
             "miasto": "Poznan",
         },
         {
             "name": "CDV",
-            "type": "uczelnia",
+            "type": "university",
             "miasto": "Poznan",
             "score": 5
         },
         {
             "name": "Politechnika Poznanska",
-            "type": "uczelnia",
+            "type": "university",
             "miasto": "Poznań",
             "score": 2
         },
         {
             "name": "Politechnika Gdańska",
-            "type": "uczelnia",
+            "type": "university",
             "miasto": "Gdansk",
             "score": 1
         }
@@ -111,7 +111,7 @@ Json example:
 
     {
         "name": "UAM",
-        "type": "uczelnia",
+        "type": "university",
         "miasto": "Warsaw"
         "score": 6
     }

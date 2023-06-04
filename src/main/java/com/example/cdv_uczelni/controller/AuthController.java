@@ -25,11 +25,19 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 public class AuthController {
 
-    @Autowired
+
     private UserService userService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+    @Autowired
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public void register(@RequestBody User user, HttpServletRequest request,
@@ -51,8 +59,8 @@ public class AuthController {
             } else {
                 if (Util.validateEmailAddress(user.getEmail())) {
                     user.setPassword(passwordEncoder.encode(user.getPassword()));
-                    UserDto user1 = userService.saveUser(user);
-                    messageMap.put("user_key", user1.getKey());
+                    UserDto user1 = userService.save(user);
+                    messageMap.put("user_key", user1.getId().toString());
                     messageMap.put("login", user1.getUsername());
                     messageMap.put("email", user1.getEmail());
                     String basicToken = user.getUsername() + ":" + "null";

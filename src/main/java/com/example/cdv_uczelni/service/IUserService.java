@@ -5,19 +5,19 @@ import com.example.cdv_uczelni.model.UserDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
+import java.util.UUID;
 
 
 public interface IUserService extends UserDetailsService {
 //    User save(UserRegistrationDto registrationDto);
 
-    UserDto saveUser(User user);
+    UserDto save(User user);
     void addRoleToUser(String login, String roleName);
     Collection<UserDto> getUsers();
-    UserDto updateUser(User user);
-    boolean deleteUser(String id);
-    UserDto findUserByKey(String key);
+    boolean delete(UUID id);
+    UserDto findUserById(UUID id);
     UserDto findUserByEmail(String email);
     UserDto findUserByUsername(String username);
     User findUserWithPasswordByUsername(String username);
-    UserDto addUniversityToUserFavorites(String username, String uczelniaKey);
+//    UserDto addUniversityToUserFavorites(String username, UUID universityId);
 }

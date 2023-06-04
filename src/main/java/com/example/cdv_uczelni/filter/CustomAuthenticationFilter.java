@@ -89,7 +89,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Map<String, Object> responseMap = new HashMap<>();
         UserDto user1 = userService.findUserByUsername(user.getUsername());
         assert user1 != null;
-        responseMap.put("user_key", user1.getKey());
+        responseMap.put("user_key", user1.getId());
         responseMap.put("login", user1.getUsername());
         responseMap.put("email", user1.getEmail());
         String basicToken = user.getUsername() + ":" + "null";

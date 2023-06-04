@@ -1,14 +1,9 @@
 package com.example.cdv_uczelni.service.impl;
 
-import com.datastax.oss.driver.api.core.CqlSession;
-import com.datastax.oss.driver.api.core.cql.BoundStatement;
-import com.datastax.oss.driver.api.core.cql.PreparedStatement;
-import com.datastax.oss.driver.api.core.cql.ResultSet;
-import com.datastax.oss.driver.api.core.cql.Row;
-import com.example.cdv_uczelni.model.Uczelnia;
+import com.example.cdv_uczelni.model.University;
 import com.example.cdv_uczelni.model.User;
 import com.example.cdv_uczelni.model.UserDto;
-import com.example.cdv_uczelni.repo.UczelniaRepository;
+import com.example.cdv_uczelni.repo.UniversityRepository;
 import com.example.cdv_uczelni.repo.UserRepository;
 import com.example.cdv_uczelni.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,61 +23,24 @@ public class UserService implements IUserService {
 
     AuthenticationManager authenticationManager;
 
-    private final CqlSession cqlSession;
-
     private final UserRepository userRepository;
-    private final UczelniaRepository uczelniaRepository;
+    private final UniversityRepository universityRepository;
 
 
     @Autowired
-    public UserService(@Lazy AuthenticationManager authenticationManager, CqlSession cqlSession, UserRepository userRepository, UczelniaRepository uczelniaRepository) {
+    public UserService(@Lazy AuthenticationManager authenticationManager,
+                       @Lazy UserRepository userRepository,
+                       @Lazy UniversityRepository universityRepository) {
         this.authenticationManager = authenticationManager;
-        this.cqlSession = cqlSession;
         this.userRepository = userRepository;
-        this.uczelniaRepository = uczelniaRepository;
+        this.universityRepository = universityRepository;
     }
 
     @Override
-    public UserDto saveUser(User user) {
-
-        UserDto user1 = findUserByUsername(user.getUsername());
-        if (user1 == null) {
-            String userKey;
-            if (user.getUsername().equals("admin")) {
-                userKey = user.setKeyForAdmin();
-            } else {
-                userKey = user.setNextKey();
-            }
-
-            user.setKey(userKey);
-            String cql = "INSERT INTO users (key, username, email, password) VALUES (?, ?, ?, ?)";
-            PreparedStatement preparedStatement = (PreparedStatement) cqlSession.prepare(cql);
-            BoundStatement boundStatement = preparedStatement.bind(
-                    userKey,
-                    user.getUsername(),
-                    user.getEmail(),
-                    user.getPassword());
-
-            ResultSet resultSet = cqlSession.execute(boundStatement);
-
-            if (resultSet.wasApplied()) {
-                log.info("User {} was added", user);
-            }
-
-        } else {
-            String cql = "UPDATE users SET email = ?, password = ? WHERE username = ? ALLOW FILTERING";
-            PreparedStatement preparedStatement = (PreparedStatement) cqlSession.prepare(cql);
-            BoundStatement boundStatement = preparedStatement.bind(
-                    user.getEmail(),
-                    user.getPassword(),
-                    user.getUsername());
-
-            ResultSet resultSet = cqlSession.execute(boundStatement);
-            if (resultSet.wasApplied()) {
-                log.info("User {} was updated", user);
-            }
-        }
-        return new UserDto(user);
+    public UserDto save(User user) {
+        user.setId(UUID.randomUUID());
+        User newUser = userRepository.save(user);
+        return new UserDto(newUser);
     }
 
     @Override
@@ -90,149 +48,79 @@ public class UserService implements IUserService {
 
     @Override
     public Collection<UserDto> getUsers() {
-        String cql = "SELECT key, username, email, password FROM users";
-        PreparedStatement preparedStatement = (PreparedStatement) cqlSession.prepare(cql);
-        BoundStatement boundStatement = preparedStatement.bind();
-        ResultSet resultSet = cqlSession.execute(boundStatement);
-        Set<UserDto> users = new HashSet<>();
-
-        for (Row row : resultSet) {
-            User user = new User();
-            user.setKey(row.getString("key"));
-            user.setKey(row.getString("key"));
-            user.setUsername(row.getString("username"));
-            user.setEmail(row.getString("email"));
-            users.add(new UserDto(user));
-        }
-        return users;
+        List<User> allUsers = userRepository.findAll();
+        Set<UserDto> usersSet = new HashSet<>();
+        allUsers.forEach(user -> {
+            usersSet.add(new UserDto(user));
+        });
+        return usersSet;
     }
 
     @Override
-    public UserDto updateUser(User user) {
-        return saveUser(user);
+    public boolean delete(UUID id) {
+        userRepository.deleteById(id);
+        return true;
     }
 
-    @Override
-    public boolean deleteUser(String id) {
-        String cql = "DELETE FROM users WHERE key = ? IF EXISTS";
-        PreparedStatement preparedStatement = (PreparedStatement) cqlSession.prepare(cql);
-        BoundStatement boundStatement = preparedStatement.bind("users:" + id);
-        ResultSet resultSet = cqlSession.execute(boundStatement);
-        if (resultSet.wasApplied()) {
-            log.info("User has been removed");
-        }
-        return resultSet.wasApplied();
-    }
 
     @Override
-    public UserDto findUserByKey(String key) {
-        String cql = "SELECT key, username, email FROM users WHERE key = ? ALLOW FILTERING";
-        PreparedStatement preparedStatement = (PreparedStatement) cqlSession.prepare(cql);
-        BoundStatement boundStatement = preparedStatement.bind(key);
-        ResultSet resultSet = cqlSession.execute(boundStatement);
-        Row row = resultSet.one();
-
-        if (row != null) {
-            User user = new User();
-            user.setKey(row.getString("key"));
-            user.setUsername(row.getString("username"));
-            user.setEmail(row.getString("email"));
-            return new UserDto(user);
+    public UserDto findUserById(UUID id) {
+        Optional<User> userFoundById = userRepository.findById(id);
+        if (userFoundById.isPresent()) {
+            return new UserDto(userFoundById.get());
+        } else {
+            throw new RuntimeException("User with id = " + id + " was not found!");
         }
-        return null;
     }
 
     @Override
     public UserDto findUserByEmail(String email) {
-        String cql = "SELECT key, username, email FROM users WHERE email = ? ALLOW FILTERING";
-        PreparedStatement preparedStatement = (PreparedStatement) cqlSession.prepare(cql);
-        BoundStatement boundStatement = preparedStatement.bind(email);
-        ResultSet resultSet = cqlSession.execute(boundStatement);
-        Row row = resultSet.one();
-
-        if (row != null) {
-            User user = new User();
-            user.setKey(row.getString("key"));
-            user.setUsername(row.getString("username"));
-            user.setEmail(row.getString("email"));
-            return new UserDto(user);
+        Optional<User> userFoundByEmail = userRepository.findUserByEmail(email);
+        if (userFoundByEmail.isPresent()) {
+            return new UserDto(userFoundByEmail.get());
+        } else {
+            throw new RuntimeException("User with email = " + email + " was not found!");
         }
-        return null;
     }
 
     @Override
     public UserDto findUserByUsername(String username) {
-        String cql = "SELECT key, username, email, password FROM users WHERE username = ? ALLOW FILTERING";
-        PreparedStatement preparedStatement = (PreparedStatement) cqlSession.prepare(cql);
-        BoundStatement boundStatement = preparedStatement.bind(username);
-        ResultSet resultSet = cqlSession.execute(boundStatement);
-        Row row = resultSet.one();
-
-        if (row != null) {
-            User user = new User();
-            user.setKey(row.getString("key"));
-            user.setUsername(row.getString("username"));
-            user.setEmail(row.getString("email"));
-            user.setPassword(row.getString("password"));
-            return new UserDto(user);
-        }
-        return null;
+        Optional<User> userFoundByUsername = userRepository.findUserByUsername(username);
+        return userFoundByUsername.map(UserDto::new).orElse(null);
     }
 
     @Override
     public User findUserWithPasswordByUsername(String username) {
-        String cql = "SELECT key, username, email, password FROM users WHERE username = ? ALLOW FILTERING";
-        PreparedStatement preparedStatement = (PreparedStatement) cqlSession.prepare(cql);
-        BoundStatement boundStatement = preparedStatement.bind(username);
-        ResultSet resultSet = cqlSession.execute(boundStatement);
-        Row row = resultSet.one();
-
-        if (row != null) {
-            User user = new User();
-            user.setKey(row.getString("key"));
-            user.setUsername(row.getString("username"));
-            user.setEmail(row.getString("email"));
-            user.setPassword(row.getString("password"));
-            return user;
+        Optional<User> userFoundByUsername = userRepository.findUserByUsername(username);
+        if (userFoundByUsername.isPresent()) {
+            return userFoundByUsername.get();
+        } else {
+            throw new RuntimeException("User with name = " + username + " was not found!");
         }
-        return null;
     }
 
-    public UserDto addUniversityToUserFavorites(String username, String uczelniaKey) {
-        Optional<User> user = userRepository.findUserByUsername(username);
-        Optional<Uczelnia> uczelnia = uczelniaRepository.findById(uczelniaKey);
-        User userSaved = null;
+//    public UserDto addUniversityToUserFavorites(String username, UUID universityId) {
+//        Optional<User> user = userRepository.findUserByUsername(username);
+//        Optional<University> university = universityRepository.findById(universityId);
+//        User userSaved = null;
+//
+//        if (user.isPresent() && university.isPresent()) {
+//            Set<University> favoriteUniversities = user.get().getFavoriteUniversities();
+//            if (favoriteUniversities == null) {
+//                favoriteUniversities = new HashSet<>();
+//                user.get().setFavoriteUniversities(favoriteUniversities);
+//            }
+//
+//            favoriteUniversities.add(university.get());
+//            userSaved = userRepository.save(user.get());
+//
+//        } else {
+//            throw new RuntimeException("University with id: " + universityId + " was not found!");
+//        }
+//        return new UserDto(userSaved);
+//    }
 
-        if (user.isPresent() && uczelnia.isPresent()) {
-            Set<Uczelnia> ulubioneUczelnie = user.get().getUlubioneUczelnie();
-            if (ulubioneUczelnie == null) {
-                ulubioneUczelnie = new HashSet<>();
-                user.get().setUlubioneUczelnie(ulubioneUczelnie);
-            }
-
-            ulubioneUczelnie.add(uczelnia.get());
-            userSaved = userRepository.save(user.get());
-
-        } else {
-            throw new RuntimeException("Uczelnia with key: " + uczelniaKey + " was not found!");
-        }
-        return new UserDto(userSaved);
-    }
-
-    public boolean removeUniversityFromUserFavorites(String username, String uczelniaKey) {
-        Optional<User> user = userRepository.findUserByUsername(username);
-        Optional<Uczelnia> uczelnia = uczelniaRepository.findById(uczelniaKey);
-        User userSaved = null;
-        if (user.isPresent() && uczelnia.isPresent()) {
-            Set<Uczelnia> ulubioneUczelnie = user.get().getUlubioneUczelnie();
-            if (ulubioneUczelnie != null) {
-                ulubioneUczelnie.remove(uczelnia.get());
-                userRepository.save(user.get());
-                return true;
-            }
-        } else {
-            throw new RuntimeException("Uczelnia with key: " + uczelniaKey + " was not found!");
-        }
+    public boolean removeUniversityFromUserFavorites(String username, String universityId) {
         return false;
     }
 

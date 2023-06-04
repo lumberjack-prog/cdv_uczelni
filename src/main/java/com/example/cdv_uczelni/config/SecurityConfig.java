@@ -20,13 +20,10 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
+@EnableCassandraRepositories
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserService userService;
-
-    public UserService getUserService() {
-        return userService;
-    }
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -39,17 +36,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.authorizeRequests().antMatchers("/login/**", "/registration/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
-        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), getUserService()));
+        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), userService));
         http.addFilterAfter(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.httpBasic();
-//        http.authorizeRequests().antMatchers(GET, "/user/**", "/message/**", "/groups/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
-//        http.authorizeRequests().antMatchers(DELETE, "/user/**", "/message/**", "/groups/removeGroup/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
-//        http.authorizeRequests().antMatchers(POST, "/user/save/**").hasAnyAuthority("ROLE_USER");
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(getUserService()).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
 
     @Bean

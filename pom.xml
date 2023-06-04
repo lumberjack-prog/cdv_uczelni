@@ -42,28 +42,45 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.lettuce</groupId>
-            <artifactId>lettuce-core</artifactId>
-            <version>6.2.4.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
+        <!-- Spring Boot Starter Data Cassandra -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-cassandra</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.datastax.astra</groupId>
-            <artifactId>astra-spring-boot-starter</artifactId>
-            <version>0.1.13</version>
-        </dependency>
+
+        <!-- Cassandra Driver Core -->
         <dependency>
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-core</artifactId>
             <version>4.13.0</version>
+        </dependency>
+
+        <!-- Cassandra Driver Spring Boot Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-cassandra</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <!-- Cassandra Driver Query Builder -->
+        <dependency>
+            <groupId>com.datastax.oss</groupId>
+            <artifactId>java-driver-query-builder</artifactId>
+            <version>4.13.0</version>
+        </dependency>
+
+        <!-- Cassandra Driver Mapper -->
+        <dependency>
+            <groupId>com.datastax.oss</groupId>
+            <artifactId>java-driver-mapper-runtime</artifactId>
+            <version>4.13.0</version>
+        </dependency>
+
+        <!-- Cassandra Driver Extras -->
+        <dependency>
+            <groupId>com.datastax.oss</groupId>
+            <artifactId>java-driver-core</artifactId>
+            <version>4.15.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

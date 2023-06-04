@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -14,15 +15,15 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserDto implements Serializable {
 
-    private String key;
+    private UUID id;
     private String username;
     private String email;
-    private Set<Uczelnia> ulubioneUczelnie;
+    private Set<University> favoriteUniversities;
 
     public UserDto(User user) {
-        this.key = user.getKey();
+        this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
-        this.ulubioneUczelnie = user.getUlubioneUczelnie();
+//        this.favoriteUniversities = user.getFavoriteUniversities();
     }
 }

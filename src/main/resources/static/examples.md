@@ -11,24 +11,53 @@
 
 
 ```
-{
-    "uczelnie": [
-    ]
-}
+       "universities": {
+            "name": "Politechnika Poznanska",
+            "type": "uczelnia",
+            "city": "Poznań",
+            "score": 15,
+            "faculties": [
+                {
+                    "name": "WYDZIAŁ AUTOMATYKI, ROBOTYKI I ELEKTROTECHNIKI",
+                    "majors": [
+                        {
+                            "name": "Automatyka i robotyka",
+                            "type": "techniczne"
+                        },
+                        {
+                            "name": "Matematyka w technice",
+                            "type": "techniczne"
+                        }
+                    ]
+                },
+                {
+                    "name": "LOGO WYDZIAŁU WYDZIAŁ INFORMATYKI I TELEKOMUNIKACJI",
+                    "majors": [
+                        {
+                            "name": "Bioinformatyka",
+                            "type": "techniczne"
+                        },
+                        {
+                            "name": "Informatyka",
+                            "type": "techniczne"
+                        },
+                        {
+                            "name": "Sztuczna inteligencja",
+                            "type": "techniczne"
+                        }
+                    ]
+                }
+            ]
+        }
 ```
 
-
-    private String key;
-    private String name;
-    private String type;
-    private String miasto;
-    private int score;
-    private Set<Wydzial> wydzialy;
-
-Wydzial
-    private String name;
-    private Set<Kierunek> kierunki;
-
-Kierunek
-private String name;
-private String type;
+```
+        {
+            "key": "users:1",
+            "username": "admin",
+            "email": "admin@gmail.com"
+            "ulubioneUczelnie": [
+                
+            ]
+        }
+```
