@@ -21,6 +21,13 @@ public class User {
     private String username;
     private String email;
     private String password;
-//    @Column("universities")
-//    private Set<University> favoriteUniversities;
+    @Column("voteForUniversity")
+    private UUID voteForUniversity;
+
+    public User(UserDto userDto) {
+        this.id = userDto.getId();
+        this.username = userDto.getUsername();
+        this.email = userDto.getEmail();
+        this.voteForUniversity = userDto.getVoteForUniversity();
+    }
 }

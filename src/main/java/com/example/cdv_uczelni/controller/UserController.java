@@ -59,9 +59,9 @@ public class UserController {
         return new ResponseEntity<>(favoriteService.save(authentication.getName(), universityKey), HttpStatus.OK);
     }
 
-//    @RequestMapping(value = "/removeFromFavorites/{universityKey}", method = RequestMethod.GET)
-//    public ResponseEntity<?> removeFromFavorites(@PathVariable UUID universityKey){
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        return new ResponseEntity<>(userService.addUniversityToUserFavorites(authentication.getName(), universityKey), HttpStatus.OK);
-//    }
+    @RequestMapping(value = "/voteFor/{universityId}", method = RequestMethod.GET)
+    public ResponseEntity<?> removeFromFavorites(@PathVariable UUID universityId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return new ResponseEntity<>(userService.voteForUniversity(universityId, authentication.getName()), HttpStatus.OK);
+    }
 }

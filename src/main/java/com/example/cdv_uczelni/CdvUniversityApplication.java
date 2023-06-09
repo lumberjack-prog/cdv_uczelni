@@ -45,19 +45,19 @@ public class CdvUniversityApplication {
                 userService.save(user);
             }
 
-            University university = new University();
-            university.setCity("Poznan");
-            university.setName("CDV");
-            university.setType("technical");
-            Faculty faculty = new Faculty();
-            faculty.setName("WYDZIAŁ INFORMATYKI I TELEKOMUNIKACJI");
-            Major major = new Major();
-            major.setName("Informatyka");
-            major.setType("techniczne");
-            faculty.setMajors(Set.of(major));
-            university.setFaculties(List.of(faculty));
-
-            universityService.save(university);
+//            University university = new University();
+//            university.setCity("Poznan");
+//            university.setName("CDV");
+//            university.setType("technical");
+//            Faculty faculty = new Faculty();
+//            faculty.setName("WYDZIAŁ INFORMATYKI I TELEKOMUNIKACJI");
+//            Major major = new Major();
+//            major.setName("Informatyka");
+//            major.setType("techniczne");
+//            faculty.setMajors(Set.of(major));
+//            university.setFaculties(List.of(faculty));
+//
+//            universityService.save(university);
 
         };
     }

@@ -19,5 +19,5 @@ public interface IUserService extends UserDetailsService {
     UserDto findUserByEmail(String email);
     UserDto findUserByUsername(String username);
     User findUserWithPasswordByUsername(String username);
-//    UserDto addUniversityToUserFavorites(String username, UUID universityId);
+    UserDto voteForUniversity(UUID universityId, String username);
 }

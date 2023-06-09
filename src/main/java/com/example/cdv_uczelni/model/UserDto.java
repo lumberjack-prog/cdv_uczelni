@@ -18,12 +18,12 @@ public class UserDto implements Serializable {
     private UUID id;
     private String username;
     private String email;
-    private Set<University> favoriteUniversities;
+    private UUID voteForUniversity;
 
     public UserDto(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
-//        this.favoriteUniversities = user.getFavoriteUniversities();
+        this.voteForUniversity = user.getVoteForUniversity();
     }
 }

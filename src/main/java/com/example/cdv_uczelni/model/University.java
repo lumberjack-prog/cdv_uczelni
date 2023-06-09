@@ -19,8 +19,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @NoArgsConstructor
-@Table("universities")
-@UserDefinedType("universities")
+@Table(value = "universities")
 public class University implements Serializable, Comparable {
     @PrimaryKey
     private UUID id;
@@ -52,5 +51,27 @@ public class University implements Serializable, Comparable {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public static University universityUDTToUniversity(UniversityUDT universityUDT) {
+        University university = new University();
+        university.setId(universityUDT.getId());
+        university.setName(universityUDT.getName());
+        university.setCity(universityUDT.getCity());
+        university.setScore(universityUDT.getScore());
+        university.setType(universityUDT.getType());
+        university.setFaculties(universityUDT.getFaculties());
+        return university;
+    }
+
+    public static UniversityUDT universityToUniversityUDT(University university) {
+        UniversityUDT universityUDT = new UniversityUDT();
+        universityUDT.setId(university.getId());
+        universityUDT.setName(university.getName());
+        universityUDT.setCity(university.getCity());
+        universityUDT.setScore(university.getScore());
+        universityUDT.setType(university.getType());
+        universityUDT.setFaculties(university.getFaculties());
+        return universityUDT;
     }
 }

@@ -99,29 +99,15 @@ public class UserService implements IUserService {
         }
     }
 
-//    public UserDto addUniversityToUserFavorites(String username, UUID universityId) {
-//        Optional<User> user = userRepository.findUserByUsername(username);
-//        Optional<University> university = universityRepository.findById(universityId);
-//        User userSaved = null;
-//
-//        if (user.isPresent() && university.isPresent()) {
-//            Set<University> favoriteUniversities = user.get().getFavoriteUniversities();
-//            if (favoriteUniversities == null) {
-//                favoriteUniversities = new HashSet<>();
-//                user.get().setFavoriteUniversities(favoriteUniversities);
-//            }
-//
-//            favoriteUniversities.add(university.get());
-//            userSaved = userRepository.save(user.get());
-//
-//        } else {
-//            throw new RuntimeException("University with id: " + universityId + " was not found!");
-//        }
-//        return new UserDto(userSaved);
-//    }
-
-    public boolean removeUniversityFromUserFavorites(String username, String universityId) {
-        return false;
+    @Override
+    public UserDto voteForUniversity(UUID universityId, String username) {
+        UserDto userByUsername = findUserByUsername(username);
+        Optional<University> byId = universityRepository.findById(universityId);
+        if(userByUsername.getVoteForUniversity() == null && byId.isPresent()) {
+            userByUsername.setVoteForUniversity(universityId);
+            userRepository.save(new User(userByUsername));
+        }
+        return userByUsername;
     }
 
     @Override

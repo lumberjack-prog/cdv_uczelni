@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
+
 import java.util.Set;
 import java.util.UUID;
 
@@ -14,11 +15,11 @@ import java.util.UUID;
 @Setter
 @ToString
 @NoArgsConstructor
-@Table("favorites")
+@Table(value = "favorites")
 public class Favorite {
     @PrimaryKey
     private UUID id;
     private String username;
     @Column("favoriteUniversities")
-    private Set<University> favoriteUniversities;
+    private Set<UniversityUDT> favoriteUniversities;
 }
